@@ -36,43 +36,40 @@ async function getIdEn() {
 
 
 async function displayQuestions() {
-  console.log("Kjører displayQuestions")
-  const quizContainer = document.getElementById('quiz-container');
-
-  // Hent alle spørsmålene fra databasen
-  const querySnapshot = await getDocs(collection(db, 'os'));
-
-  // Legg alle spørsmålene i en array
-  const questions = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
-
-  // Randomiser arrayen
-  questions.sort(() => Math.random() - 0.5);
-
-  questions.forEach((question) => {
-      const data = question.data;
-      
-      // Kombiner options og correct i en array av objekter
-      const options = data.options.map((option, index) => ({
-          text: option,
-          correct: data.correct[index]
-      }));
-      
-      // Randomiser options arrayen
-      options.sort(() => Math.random() - 0.5);
-      
-      // Opprett et element for hvert spørsmål
-      const questionDiv = document.createElement('div');
-      questionDiv.innerHTML = `
-          <h3>${data.question}</h3>
-          ${options.map((option, index) => `
-              <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}">
-              <label for="question-${question.id}-option-${index}">${option.text}</label><br>
-          `).join('')}
-      `;
-      
-      // Legg til spørsmålet til quiz-formen
-      quizContainer.appendChild(questionDiv);
-  });
+    console.log("Kjører displayQuestions")
+    const quizContainer = document.getElementById('quiz-container');
+  
+    // Hent alle spørsmålene fra databasen
+    const querySnapshot = await getDocs(collection(db, 'os'));
+  
+    // Legg alle spørsmålene i en array
+    const questions = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+  
+    // Randomiser arrayen
+    questions.sort(() => Math.random() - 0.5);
+  
+    questions.forEach((question) => {
+        const data = question.data;
+        
+        // Kombiner options og correct i en array av objekter
+        const options = data.options.map((option, index) => ({
+            text: option,
+            correct: data.correct[index]
+        }));
+        
+        // Opprett et element for hvert spørsmål
+        const questionDiv = document.createElement('div');
+        questionDiv.innerHTML = `
+            <h2>${data.question}</h2>
+            ${options.map((option, index) => `
+                <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}">
+                <label for="question-${question.id}-option-${index}">${option.text}</label><br>
+            `).join('')}
+        `;
+        
+        // Legg til spørsmålet til quiz-formen
+        quizContainer.appendChild(questionDiv);
+    });
 }
 
 displayQuestions();
