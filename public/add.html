@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/index.css" />
+    <title>add</title>
+  </head>
+  <body>
+    <h1>Add a new multiple choice question</h1>
+    <form id="question-form">
+      <label for="question">Question:</label><br />
+      <textarea id="question" name="question" rows="4" required></textarea>
+      <div id="options-container">
+        <div class="option">
+          <label for="option-1">Option 1:</label>
+          <input type="text" id="option-1" name="option-1" required />
+          <input type="checkbox" id="correct-1" name="correct-1" />
+          <label for="correct-1">Correct answer</label>
+        </div>
+      </div>
+      <button type="button" id="add-option">Add option</button>
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+  <script type="module" src="js/index.js"></script>
+  <script type="module" src="js/add.js"></script>
+</html>
