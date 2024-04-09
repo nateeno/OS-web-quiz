@@ -5,16 +5,30 @@ body {
   background-color: #f1f1f1;
 }
 
-h1, h2 {
-  color: #333;
-  text-align: center;
-  padding: 20px 0;
+h2 {
+  padding: 10px;
+  text-align: left;
 }
 
-p, ol {
+h1  {
+  font-size: calc(40px + 3vw);
+  text-align: center;
+}
+
+h3 {
+  color: #333;
+
+}
+
+p, ol, h1, h2 {
+  color: #333;
   width: 80%;
   max-width: 800px;
   margin: 10px auto;
+  
+}
+
+p, ol {
   font-size: 1.1em;
   line-height: 1.6;
 }
