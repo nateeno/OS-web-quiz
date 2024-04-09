@@ -56,13 +56,16 @@ async function displayQuestions() {
             text: option,
             correct: data.correct[index]
         }));
+    
+        // Randomiser options arrayen
+        options.sort(() => Math.random() - 0.5);
         
         // Opprett et element for hvert spørsmål
         const questionDiv = document.createElement('div');
         questionDiv.innerHTML = `
             <h2>${data.question}</h2>
             ${options.map((option, index) => `
-                <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}">
+                <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}" data-correct="${option.correct}">
                 <label for="question-${question.id}-option-${index}">${option.text}</label><br>
             `).join('')}
         `;
@@ -73,49 +76,105 @@ async function displayQuestions() {
 }
 
 displayQuestions();
+document.getElementById('submit-quiz').addEventListener('click', async function() {
+    // Hent alle spørsmålene fra databasen
+    const querySnapshot = await getDocs(collection(db, 'os'));
+    
+    var score = 0;
+    var total = 0;
+    
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        
+        var correctForThisQuestion = true;
+        
+        // Sjekk hvert alternativ for hvert spørsmål
+        data.options.forEach((option, index) => {
+            const checkbox = document.getElementById(`question-${doc.id}-option-${index}`);
+            const label = document.querySelector(`label[for="question-${doc.id}-option-${index}"]`);
+            
+            // Hvis brukeren har valgt dette alternativet
+            if (checkbox.checked) {
+                // Hvis alternativet er feil, marker det som feil og sett correctForThisQuestion til false
+                if (checkbox.dataset.correct !== 'true') {
+                    correctForThisQuestion = false;
+                    label.classList.add('incorrect');
+                }
+                // Hvis alternativet er riktig, marker det som riktig
+                else {
+                    label.classList.add('correct');
+                }
+            }
+            // Hvis brukeren ikke har valgt dette alternativet, men det er riktig, marker det som riktig og sett correctForThisQuestion til false
+            else if (checkbox.dataset.correct === 'true') {
+                correctForThisQuestion = false;
+                label.classList.add('correct');
+            }
+        });
+  
+        // Hvis brukeren valgte alle de riktige svarene og ingen av de gale svarene for dette spørsmålet, øk scoren
+        if (correctForThisQuestion) {
+            score++;
+        }
+  
+        // Øk det totale antall spørsmål
+        total++;
+    });
+    // Beregn prosentdelen av korrekte svar
+    var percentage = Math.round((score / total) * 100);
+    
+    // Vis scoren og prosentdelen
+    document.getElementById('results').textContent = `Din score er: ${score} av ${total} som tilsvarer ${percentage}%`;
+  });
+
+/*
+GAMMEL: Her er det minus og pluss om hverandre 
+
+
 
 document.getElementById('submit-quiz').addEventListener('click', async function() {
-  // Hent alle spørsmålene fra databasen
-  const querySnapshot = await getDocs(collection(db, 'os'));
+    // Hent alle spørsmålene fra databasen
+    const querySnapshot = await getDocs(collection(db, 'os'));
+    
+    var score = 0;
+    var total = 0;
+    
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        
+        // Sjekk hvert alternativ for hvert spørsmål
+        data.options.forEach((option, index) => {
+            const checkbox = document.getElementById(`question-${doc.id}-option-${index}`);
+            const label = document.querySelector(`label[for="question-${doc.id}-option-${index}"]`);
+            
+            // Hvis brukeren har valgt dette alternativet
+            if (checkbox.checked) {
+                // Hvis alternativet er riktig, øk scoren og marker det som riktig
+                if (checkbox.dataset.correct === 'true') {
+                    score++;
+                    label.classList.add('correct');
+                }
+                // Hvis alternativet er feil, reduser scoren og marker det som feil
+                else {
+                    score--;
+                    label.classList.add('incorrect');
+                }
+            }
+            // Hvis brukeren ikke har valgt dette alternativet, men det er riktig, marker det som riktig
+            else if (checkbox.dataset.correct === 'true') {
+                label.classList.add('correct');
+            }
   
-  var score = 0;
-  var total = 0;
-  
-  querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      
-      // Sjekk hvert alternativ for hvert spørsmål
-      data.options.forEach((option, index) => {
-          const checkbox = document.getElementById(`question-${doc.id}-option-${index}`);
-          const label = document.querySelector(`label[for="question-${doc.id}-option-${index}"]`);
-          
-          // Hvis brukeren har valgt dette alternativet
-          if (checkbox.checked) {
-              // Hvis alternativet er riktig, øk scoren og marker det som riktig
-              if (data.correct[index]) {
-                  score++;
-                  label.classList.add('correct');
-              }
-              // Hvis alternativet er feil, reduser scoren og marker det som feil
-              else {
-                  score--;
-                  label.classList.add('incorrect');
-              }
-          }
-          // Hvis brukeren ikke har valgt dette alternativet, men det er riktig, marker det som riktig
-          else if (data.correct[index]) {
-              label.classList.add('correct');
-          }
-
-          // Øk det totale antall spørsmål hvis alternativet er korrekt
-          if (data.correct[index]) {
-              total++;
-          }
-      });
+            // Øk det totale antall spørsmål hvis alternativet er korrekt
+            if (checkbox.dataset.correct === 'true') {
+                total++;
+            }
+        });
+    });
+    // Beregn prosentdelen av korrekte svar
+    var percentage = Math.round((score / total) * 100);
+    
+    // Vis scoren og prosentdelen
+    document.getElementById('results').textContent = `Din score er: ${score} av ${total} som tilsvarer ${percentage}%`;
   });
-  // Beregn prosentdelen av korrekte svar
-  var percentage = Math.round((score / total) * 100);
-  
-  // Vis scoren og prosentdelen
-  document.getElementById('results').textContent = `Din score er: ${score} av ${total} som tilsvarer ${percentage}%`;
-});
+*/ 
