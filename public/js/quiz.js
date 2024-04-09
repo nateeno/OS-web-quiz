@@ -35,30 +35,88 @@ async function getIdEn() {
 //getIdEn();
 
 
-
 async function displayQuestions() {
   console.log("Kjører displayQuestions")
   const quizContainer = document.getElementById('quiz-container');
-  
+
   // Hent alle spørsmålene fra databasen
   const querySnapshot = await getDocs(collection(db, 'os'));
 
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
+  // Legg alle spørsmålene i en array
+  const questions = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+
+  // Randomiser arrayen
+  questions.sort(() => Math.random() - 0.5);
+
+  questions.forEach((question) => {
+      const data = question.data;
       
-    // Opprett et element for hvert spørsmål
-    const questionDiv = document.createElement('div');
-    questionDiv.innerHTML = `
-      <h2>${data.question}</h2>
-      ${data.options.map((option, index) => `
-        <input type="checkbox" id="question-${doc.id}-option-${index}" name="question-${doc.id}" value="${option}">
-        <label for="question-${doc.id}-option-${index}">${option}</label><br>
-      `).join('')}
-    `;
+      // Kombiner options og correct i en array av objekter
+      const options = data.options.map((option, index) => ({
+          text: option,
+          correct: data.correct[index]
+      }));
       
-    // Legg til spørsmålet til quiz-formen
-    quizContainer.appendChild(questionDiv);
+      // Randomiser options arrayen
+      options.sort(() => Math.random() - 0.5);
+      
+      // Opprett et element for hvert spørsmål
+      const questionDiv = document.createElement('div');
+      questionDiv.innerHTML = `
+          <h2>${data.question}</h2>
+          ${options.map((option, index) => `
+              <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}">
+              <label for="question-${question.id}-option-${index}">${option.text}</label><br>
+          `).join('')}
+      `;
+      
+      // Legg til spørsmålet til quiz-formen
+      quizContainer.appendChild(questionDiv);
   });
 }
 
 displayQuestions();
+
+document.getElementById('submit-quiz').addEventListener('click', async function() {
+  // Hent alle spørsmålene fra databasen
+  const querySnapshot = await getDocs(collection(db, 'os'));
+  
+  var score = 0;
+  var total = 0;
+  
+  querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      
+      // Sjekk hvert alternativ for hvert spørsmål
+      data.options.forEach((option, index) => {
+          const checkbox = document.getElementById(`question-${doc.id}-option-${index}`);
+          const label = document.querySelector(`label[for="question-${doc.id}-option-${index}"]`);
+          
+          // Hvis brukeren har valgt dette alternativet
+          if (checkbox.checked) {
+              // Hvis alternativet er riktig, øk scoren og marker det som riktig
+              if (data.correct[index]) {
+                  score++;
+                  label.classList.add('correct');
+              }
+              // Hvis alternativet er feil, reduser scoren og marker det som feil
+              else {
+                  score--;
+                  label.classList.add('incorrect');
+              }
+          }
+          // Hvis brukeren ikke har valgt dette alternativet, men det er riktig, marker det som riktig
+          else if (data.correct[index]) {
+              label.classList.add('correct');
+          }
+
+          // Øk det totale antall spørsmål hvis alternativet er korrekt
+          if (data.correct[index]) {
+              total++;
+          }
+      });
+  });
+  
+  // Vis scoren
+  document.getElementById('results').textContent = `Your score: ${score} out of ${total}`;
+});

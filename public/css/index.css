@@ -51,3 +51,13 @@
       .option {
         margin-bottom: 20px;
       }
+
+
+      
+      .correct {
+        background-color: #c6ffc1;
+      }
+      
+      .incorrect {
+        background-color: #ffc6c6;
+      }
