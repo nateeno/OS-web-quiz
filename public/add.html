@@ -16,19 +16,21 @@
     </nav>
     <p>Hvis noen legger til useriøse spørsmål blir jeg veldig sur</p>
     <div class="container">
-      <h1>Add a new multiple choice question</h1>
+      <h1>Legg til spørsmål i databasen</h1>
       <form id="question-form">
-        <label for="question">Question:</label><br />
+        <label for="question">Spørsmål:</label><br />
         <textarea id="question" name="question" rows="4" required></textarea>
         <div id="options-container">
           <div class="option">
-            <label for="option-1">Option 1:</label>
+            <label for="option-1">Svar alternativ 1:</label>
             <input type="text" id="option-1" name="option-1" required />
             <input type="checkbox" id="correct-1" name="correct-1" />
-            <label for="correct-1">Correct answer</label>
+            <label for="correct-1">Er dette alternative riktig?</label>
           </div>
         </div>
-        <button type="button" id="add-option">Add option</button>
+        <button type="button" id="add-option">
+          Legg til et til alternativ
+        </button>
         <input type="submit" value="Submit" />
       </form>
     </div>

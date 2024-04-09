@@ -34,10 +34,10 @@ document.getElementById('add-option').addEventListener('click', function() {
     var optionDiv = document.createElement('div');
     optionDiv.classList.add('option');
     optionDiv.innerHTML = `
-        <label for="option-${optionsCount}">Option ${optionsCount}:</label><br>
+        <label for="option-${optionsCount}">Svar alternativ ${optionsCount}:</label><br>
         <input type="text" id="option-${optionsCount}" name="option-${optionsCount}"><br>
         <input type="checkbox" id="correct-${optionsCount}" name="correct-${optionsCount}">
-        <label for="correct-${optionsCount}">Correct answer</label><br>
+        <label for="correct-${optionsCount}">Er dette alternative riktig?</label><br>
     `;
     optionsContainer.appendChild(optionDiv);
 });

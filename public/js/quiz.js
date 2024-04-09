@@ -116,7 +116,9 @@ document.getElementById('submit-quiz').addEventListener('click', async function(
           }
       });
   });
+  // Beregn prosentdelen av korrekte svar
+  var percentage = Math.round((score / total) * 100);
   
-  // Vis scoren
-  document.getElementById('results').textContent = `Your score: ${score} out of ${total}`;
+  // Vis scoren og prosentdelen
+  document.getElementById('results').textContent = `Din score er: ${score} av ${total} som tilsvarer ${percentage}%`;
 });
