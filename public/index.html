@@ -7,17 +7,35 @@
     <title>index</title>
   </head>
   <body>
+    <nav>
+      <ul>
+        <li><a href="add.html">Add questions?</a></li>
+        <li><a href="https://github.com/nateeno">GitHub</a></li>
+        <li><a href="https://natee.no/">Natee.no</a></li>
+      </ul>
+    </nav>
     <h1>Quiz</h1>
-    <p>God dag!</p>
-    <p>1. Marker svar alternativene du tror er riktig</p>
-    <p>2. Trykk på "submit"</p>
-    <p>3. Få en score</p>
-
     <p>
-      De riktigte svar alternativene er markert med grønn, og de du har merkert
-      som er feil er marker rødt
+      Velkommen! Dette er en interaktiv quiz basert på spørsmålene fra DATA2500
+      menti sprørsmål
+      <a href="https://os.cs.oslomet.no/os/Forelesning/">(her)</a>
     </p>
-    <p>Marker du en for mye får du -1 i score, så pass på!</p>
+    <h2>Slik spiller du:</h2>
+    <ol>
+      <li>Marker de alternativene du tror er riktige.</li>
+      <li>Trykk på "Submit" for å sende inn svarene dine.</li>
+      <li>Motta din score basert på hvor mange spørsmål du svarte riktig.</li>
+    </ol>
+    <p>
+      De korrekte svarene vil bli markert med grønn farge etter at du har sendt
+      inn, mens de feilaktige svarene du valgte vil bli markert i rødt.
+    </p>
+    <p>
+      Vær oppmerksom på at hver feilaktig markert respons vil trekke 1 poeng fra
+      din totale score, så velg nøye!
+    </p>
+
+    <h2>La oss begynne med spørsmålene:</h2>
     <div id="quiz-container"></div>
     <button id="submit-quiz">Submit Quiz</button>
     <div id="results"></div>

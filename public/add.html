@@ -7,21 +7,31 @@
     <title>add</title>
   </head>
   <body>
-    <h1>Add a new multiple choice question</h1>
-    <form id="question-form">
-      <label for="question">Question:</label><br />
-      <textarea id="question" name="question" rows="4" required></textarea>
-      <div id="options-container">
-        <div class="option">
-          <label for="option-1">Option 1:</label>
-          <input type="text" id="option-1" name="option-1" required />
-          <input type="checkbox" id="correct-1" name="correct-1" />
-          <label for="correct-1">Correct answer</label>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="https://github.com/nateeno">GitHub</a></li>
+        <li><a href="https://natee.no/">Natee.no</a></li>
+      </ul>
+    </nav>
+    <p>Hvis noen legger til useriøse spørsmål blir jeg veldig sur</p>
+    <div class="container">
+      <h1>Add a new multiple choice question</h1>
+      <form id="question-form">
+        <label for="question">Question:</label><br />
+        <textarea id="question" name="question" rows="4" required></textarea>
+        <div id="options-container">
+          <div class="option">
+            <label for="option-1">Option 1:</label>
+            <input type="text" id="option-1" name="option-1" required />
+            <input type="checkbox" id="correct-1" name="correct-1" />
+            <label for="correct-1">Correct answer</label>
+          </div>
         </div>
-      </div>
-      <button type="button" id="add-option">Add option</button>
-      <input type="submit" value="Submit" />
-    </form>
+        <button type="button" id="add-option">Add option</button>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
   </body>
   <script type="module" src="js/index.js"></script>
   <script type="module" src="js/add.js"></script>

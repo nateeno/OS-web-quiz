@@ -63,7 +63,7 @@ async function displayQuestions() {
       // Opprett et element for hvert spørsmål
       const questionDiv = document.createElement('div');
       questionDiv.innerHTML = `
-          <h2>${data.question}</h2>
+          <h3>${data.question}</h3>
           ${options.map((option, index) => `
               <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}">
               <label for="question-${question.id}-option-${index}">${option.text}</label><br>
