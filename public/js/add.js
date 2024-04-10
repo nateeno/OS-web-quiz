@@ -1,13 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore,
-  getDoc,
-  doc,
-  getDocs,
   collection, 
   addDoc,
-  orderBy,
-  query, 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Web app's Firebase configuration
@@ -64,8 +59,6 @@ document.getElementById('question-form').addEventListener('submit', function(e) 
 
     addNewDoc(data);
 });
-
-
 
 
 // GENEREL 
