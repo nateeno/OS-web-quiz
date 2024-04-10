@@ -127,6 +127,9 @@ function clearForm() {
     // Clear first option 
     document.getElementById(`option-1`).value = '';
     document.getElementById(`correct-1`).checked = false;
+
+    // Clear file input
+    document.getElementById('image').value = '';
     
     // Get the options container
     var optionsContainer = document.getElementById('options-container');
