@@ -19,6 +19,7 @@
       <h1>Legg til spørsmål i databasen</h1>
       <form id="question-form">
         <label for="question">Spørsmål:</label><br />
+
         <textarea id="question" name="question" rows="4" required></textarea>
         <div id="options-container">
           <div class="option">
@@ -31,6 +32,8 @@
         <button type="button" id="add-option">
           Legg til et til alternativ
         </button>
+        <label for="image">Bilde:</label>
+        <input type="file" id="image" name="image" accept="image/*" />
         <input type="submit" value="submit" />
       </form>
     </div>

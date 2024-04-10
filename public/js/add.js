@@ -5,6 +5,8 @@ import {
   addDoc,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
 // Web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDbgm-9ZvZn6BPyQkt5p-o-GLiR1vJoGXw",
@@ -19,6 +21,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const storage = getStorage(app);
 
 // CODE FOR add.html 
 var optionsCount = 1;
@@ -37,7 +41,7 @@ document.getElementById('add-option').addEventListener('click', function() {
     optionsContainer.appendChild(optionDiv);
 });
 
-document.getElementById('question-form').addEventListener('submit', function(e) {
+document.getElementById('question-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     var question = document.getElementById('question').value;
     var options = [];
@@ -48,17 +52,64 @@ document.getElementById('question-form').addEventListener('submit', function(e) 
         var isCorrect = document.getElementById(`correct-${i}`).checked;
         correct.push(isCorrect);
     }
-    
+
     const data = {
         question: question,
         options: options,
         correct: correct
     };
 
-    clearForm();
+    // Get the file from the file input
+    var file = document.getElementById('image').files[0];
 
-    addNewDoc(data);
+    // Check if a file was selected
+    if (file) {
+        // Create a storage ref
+        var storageRef = ref(storage, 'os/' + file.name);
+
+        // Upload file
+        var uploadTask = uploadBytesResumable(storageRef, file);
+
+        // Listen for state changes, errors, and completion of the upload.
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+            }, 
+            (error) => {
+                // Handle unsuccessful uploads
+                console.error('Upload failed:', error);
+            }, 
+            () => {
+                // Handle successful uploads on complete
+                // Get the download URL
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+
+                    // Add the download URL to the data
+                    data.image = downloadURL;
+
+                    // Clear the form
+                    clearForm();
+
+                    // Add the new document
+                    addNewDoc(data);
+                });
+            }
+        );
+    } else {
+        // If no file was selected, just clear the form and add the new document
+        clearForm();
+        addNewDoc(data);
+    }
 });
+
+
+
+
+
+
 
 
 // GENEREL 

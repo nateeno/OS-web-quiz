@@ -28,13 +28,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-async function getIdEn() {
-  const docID1 = await getDoc(doc(db, 'os', 'en'));
-  console.log("Id 1: " + docID1.data().navn);
-}
-//getIdEn();
-
-
 async function displayQuestions() {
     console.log("Kjører displayQuestions")
     const quizContainer = document.getElementById('quiz-container');
@@ -63,12 +56,13 @@ async function displayQuestions() {
         // Opprett et element for hvert spørsmål
         const questionDiv = document.createElement('div');
         questionDiv.innerHTML = `
-            <h3>${data.question}</h3>
-            ${options.map((option, index) => `
-                <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}" data-correct="${option.correct}">
-                <label for="question-${question.id}-option-${index}">${option.text}</label><br>
-            `).join('')}
-        `;
+        <h3>${data.question}</h3>
+        ${data.image ? `<img src="${data.image}" alt="Question image">` : ''}
+        ${options.map((option, index) => `
+        <input type="checkbox" id="question-${question.id}-option-${index}" name="question-${question.id}" value="${option.text}" data-correct="${option.correct}">
+        <label for="question-${question.id}-option-${index}">${option.text}</label><br>
+    `).join('')}
+`;
         
         // Legg til spørsmålet til quiz-formen
         quizContainer.appendChild(questionDiv);

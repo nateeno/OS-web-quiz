@@ -17,7 +17,6 @@ h1  {
 
 h3 {
   color: #333;
-
 }
 
 p, ol, h1, h2 {
@@ -25,7 +24,6 @@ p, ol, h1, h2 {
   width: 80%;
   max-width: 800px;
   margin: 10px auto;
-  
 }
 
 p, ol {
@@ -125,4 +123,12 @@ nav ul li a:hover {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+}
+
+/* New styles for images */
+#quiz-container img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
 }
