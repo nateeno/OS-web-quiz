@@ -125,9 +125,9 @@ nav ul li a:hover {
   padding: 20px;
 }
 
-/* New styles for images */
 #quiz-container img {
-  max-width: 100%;
+  max-width: 500px;
+  max-height: 500px;
   height: auto;
   display: block;
   margin: 0 auto 20px;
