@@ -1,3 +1,5 @@
+console.log("Run: add.js");
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore,
@@ -105,13 +107,6 @@ document.getElementById('question-form').addEventListener('submit', async functi
     }
 });
 
-
-
-
-
-
-
-
 // GENEREL 
 
 async function addNewDoc(data){
@@ -142,3 +137,11 @@ function clearForm() {
         optionsContainer.removeChild(optionDivs[1]);
     }
 }
+
+async function deleteQuestionById(id) {
+    const collectionName = 'os'                     // <- HUSK Å BYTT
+    await deleteDoc(doc(db, collectionName, id));
+    console.log("Removed: "+ id + " from "+ collectionName)
+}
+
+// deleteQuestionById('ID');

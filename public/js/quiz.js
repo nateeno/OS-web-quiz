@@ -3,13 +3,9 @@ console.log("Run: quiz.js");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore,
-  getDoc,
-  doc,
   getDocs,
-  collection, 
-  addDoc,
-  orderBy,
-  query, 
+  collection,
+  deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Web app's Firebase configuration
@@ -22,39 +18,51 @@ const firebaseConfig = {
     appId: "1:604545436437:web:d7240b1af644a6aafef71c"
 };
 
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Define questions array globally
+let questions = [];
 
+// Function to extract collection name from the URL
+function getCollectionFromUrl() {
+    const url = window.location.href;
+    const urlParts = url.split('/');
+    const page = urlParts[urlParts.length - 1].split('.')[0];
+    return page;
+}
+
+// Function to display questions
 async function displayQuestions() {
-    console.log("Kjører displayQuestions")
+    const collectionName = getCollectionFromUrl();
+    console.log(`Running displayQuestions for collection: ${collectionName}`);
+  
     const quizContainer = document.getElementById('quiz-container');
   
-    // Hent alle spørsmålene fra databasen
-    const querySnapshot = await getDocs(collection(db, 'os'));
-  
-    // Legg alle spørsmålene i en array
-    const questions = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
-  
-    // Randomiser arrayen
+    // Fetch all the questions from the database and populate the global questions array
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    questions = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+
+    // Randomize the order of questions
     questions.sort(() => Math.random() - 0.5);
   
+    // For each question
     questions.forEach((question) => {
         const data = question.data;
         
-        // Kombiner options og correct i en array av objekter
+        // Combine options and correct into an array of objects
         const options = data.options.map((option, index) => ({
             text: option,
             correct: data.correct[index]
         }));
     
-        // Randomiser options arrayen
+        // Randomize the order of options
         options.sort(() => Math.random() - 0.5);
         
-        // Opprett et element for hvert spørsmål
+        // Create an element for each question
         const questionDiv = document.createElement('div');
+        questionDiv.title = `Question ID: ${question.id}`; 
         questionDiv.innerHTML = `
         <h3>${data.question}</h3>
         ${data.image ? `<img src="${data.image}" alt="Question image">` : ''}
@@ -64,59 +72,60 @@ async function displayQuestions() {
     `).join('')}
 `;
         
-        // Legg til spørsmålet til quiz-formen
+        // Add the question to the quiz form
         quizContainer.appendChild(questionDiv);
     });
 }
 
 displayQuestions();
-document.getElementById('submit-quiz').addEventListener('click', async function() {
-    // Hent alle spørsmålene fra databasen
-    const querySnapshot = await getDocs(collection(db, 'os'));
+
+// Event listener for quiz submission
+document.getElementById('submit-quiz').addEventListener('click', function() {
+    let score = 0;
+    let total = 0;
     
-    var score = 0;
-    var total = 0;
-    
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
+    // For each question
+    questions.forEach((question) => {
+        const data = question.data;
         
-        var correctForThisQuestion = true;
+        // Initialize correctForThisQuestion as true
+        let correctForThisQuestion = true;
         
-        // Sjekk hvert alternativ for hvert spørsmål
+        // Check each option for each question
         data.options.forEach((option, index) => {
-            const checkbox = document.getElementById(`question-${doc.id}-option-${index}`);
-            const label = document.querySelector(`label[for="question-${doc.id}-option-${index}"]`);
+            const checkbox = document.getElementById(`question-${question.id}-option-${index}`);
+            const label = document.querySelector(`label[for="question-${question.id}-option-${index}"]`);
             
-            // Hvis brukeren har valgt dette alternativet
+            // If the user has chosen this option
             if (checkbox.checked) {
-                // Hvis alternativet er feil, marker det som feil og sett correctForThisQuestion til false
+                // If the option is incorrect, mark it as incorrect and set correctForThisQuestion to false
                 if (checkbox.dataset.correct !== 'true') {
                     correctForThisQuestion = false;
                     label.classList.add('incorrect');
                 }
-                // Hvis alternativet er riktig, marker det som riktig
+                // If the option is correct, mark it as correct
                 else {
                     label.classList.add('correct');
                 }
             }
-            // Hvis brukeren ikke har valgt dette alternativet, men det er riktig, marker det som riktig og sett correctForThisQuestion til false
+            // If the user has not chosen this option, but it is correct, mark it as correct and set correctForThisQuestion to false
             else if (checkbox.dataset.correct === 'true') {
                 correctForThisQuestion = false;
                 label.classList.add('correct');
             }
         });
   
-        // Hvis brukeren valgte alle de riktige svarene og ingen av de gale svarene for dette spørsmålet, øk scoren
+        // If the user chose all the correct answers and none of the incorrect answers for this question, increase the score
         if (correctForThisQuestion) {
             score++;
         }
-  
-        // Øk det totale antall spørsmål
-        total++;
+       // Increase the total number of questions
+       total++;
     });
-    // Beregn prosentdelen av korrekte svar
+    
+    // Calculate the percentage of correct answers
     var percentage = Math.round((score / total) * 100);
     
-    // Vis scoren og prosentdelen
+    // Display the score and the percentage
     document.getElementById('results').textContent = `Din score er: ${score} av ${total} som tilsvarer ${percentage}%`;
-  });
+});
