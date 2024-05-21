@@ -4,6 +4,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import {
   getFirestore,
   getDocs,
+  addDoc,
   collection,
   deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -21,6 +22,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const scoresCollection = collection(db, 'scores');
 
 // Define questions array globally
 let questions = [];
@@ -80,7 +83,7 @@ async function displayQuestions() {
 displayQuestions();
 
 // Event listener for quiz submission
-document.getElementById('submit-quiz').addEventListener('click', function() {
+document.getElementById('submit-quiz').addEventListener('click', async function() {
     let score = 0;
     let total = 0;
     
@@ -128,4 +131,11 @@ document.getElementById('submit-quiz').addEventListener('click', function() {
     
     // Display the score and the percentage
     document.getElementById('results').textContent = `Din score er: ${score} av ${total} som tilsvarer ${percentage}%`;
+
+    await addDoc(scoresCollection, { 
+        score: score, 
+        total: total, 
+        percentage: percentage, 
+        collectionName: getCollectionFromUrl()
+    });
 });
