@@ -2,9 +2,9 @@ console.log("Run: add.js");
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
-  getFirestore,
-  collection, 
-  addDoc,
+    getFirestore,
+    collection,
+    addDoc,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
@@ -29,7 +29,7 @@ const storage = getStorage(app);
 // CODE FOR add.html 
 var optionsCount = 1;
 
-document.getElementById('add-option').addEventListener('click', function() {
+document.getElementById('add-option').addEventListener('click', function () {
     optionsCount++;
     var optionsContainer = document.getElementById('options-container');
     var optionDiv = document.createElement('div');
@@ -43,7 +43,7 @@ document.getElementById('add-option').addEventListener('click', function() {
     optionsContainer.appendChild(optionDiv);
 });
 
-document.getElementById('question-form').addEventListener('submit', async function(e) {
+document.getElementById('question-form').addEventListener('submit', async function (e) {
     e.preventDefault();
     var question = document.getElementById('question').value;
     var options = [];
@@ -78,11 +78,11 @@ document.getElementById('question-form').addEventListener('submit', async functi
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                 var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log('Upload is ' + progress + '% done');
-            }, 
+            },
             (error) => {
                 // Handle unsuccessful uploads
                 console.error('Upload failed:', error);
-            }, 
+            },
             () => {
                 // Handle successful uploads on complete
                 // Get the download URL
@@ -95,45 +95,53 @@ document.getElementById('question-form').addEventListener('submit', async functi
                     // Clear the form
                     clearForm();
 
-                    // Add the new document
-                    addNewDoc(data);
+                    // Retrieve the selected database name
+                    var dbSelection = document.getElementById('db-selection').value;
+
+                    // Pass the selected database name to the addNewDoc function
+                    addNewDoc(data, dbSelection);
                 });
             }
         );
     } else {
         // If no file was selected, just clear the form and add the new document
         clearForm();
-        addNewDoc(data);
+
+        // Retrieve the selected database name
+        var dbSelection = document.getElementById('db-selection').value;
+
+        // Pass the selected database name to the addNewDoc function
+        addNewDoc(data, dbSelection);
     }
 });
 
 // GENEREL 
 
-async function addNewDoc(data){
-    const docRef = await addDoc(collection(db, 'os'),data);
+async function addNewDoc(data, dbName) {
+    const docRef = await addDoc(collection(db, dbName), data);
 }
 
 function clearForm() {
     document.getElementById('question').value = '';
-    
+
     // Reset optionsCount 
     optionsCount = 1;
-    
+
     // Clear first option 
     document.getElementById(`option-1`).value = '';
     document.getElementById(`correct-1`).checked = false;
 
     // Clear file input
     document.getElementById('image').value = '';
-    
+
     // Get the options container
     var optionsContainer = document.getElementById('options-container');
-    
+
     // Get all option divs
     var optionDivs = optionsContainer.getElementsByClassName('option');
-    
+
     // Remove all option divs except the first one
-    while(optionDivs.length > 1) {
+    while (optionDivs.length > 1) {
         optionsContainer.removeChild(optionDivs[1]);
     }
 }
@@ -141,7 +149,7 @@ function clearForm() {
 async function deleteQuestionById(id) {
     const collectionName = 'os'                     // <- HUSK Å BYTT
     await deleteDoc(doc(db, collectionName, id));
-    console.log("Removed: "+ id + " from "+ collectionName)
+    console.log("Removed: " + id + " from " + collectionName)
 }
 
 // deleteQuestionById('ID');
